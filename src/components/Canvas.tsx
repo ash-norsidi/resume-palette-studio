@@ -43,7 +43,7 @@ export const Canvas = ({
           <div
             ref={setNodeRef}
             className={`
-              relative min-h-[800px] bg-white rounded-lg shadow-lg border-2 border-dashed transition-all duration-normal
+              relative min-h-[800px] bg-background rounded-lg shadow-lg border-2 border-dashed transition-all duration-normal
               ${isOver 
                 ? 'border-primary bg-primary-light/10 scale-[1.01]' 
                 : 'border-border hover:border-border/80'
