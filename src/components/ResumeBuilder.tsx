@@ -17,6 +17,7 @@ import { Button } from './ui/button';
 import { Download, FileText } from 'lucide-react';
 import { generatePDF } from '../utils/pdfGenerator';
 import { toast } from 'sonner';
+import { ThemeToggle } from './ThemeToggle';
 
 export const ResumeBuilder = () => {
   const [sections, setSections] = useState<ResumeSection[]>([]);
@@ -185,11 +186,13 @@ export const ResumeBuilder = () => {
               <div className="p-2 bg-gradient-primary rounded-lg">
                 <FileText className="w-6 h-6 text-white" />
               </div>
-              <div>
-                <h1 className="text-2xl font-bold text-foreground">Resume Builder</h1>
-                <p className="text-sm text-muted-foreground">Create your professional resume</p>
-              </div>
+            <div>
+              <h1 className="text-2xl font-bold text-foreground">Resume Builder</h1>
+              <p className="text-sm text-muted-foreground">Create your professional resume</p>
             </div>
+          </div>
+          <div className="flex items-center gap-3">
+            <ThemeToggle />
             <Button 
               onClick={handleExportPDF}
               className="bg-gradient-primary hover:opacity-90 text-white shadow-element"
@@ -198,6 +201,7 @@ export const ResumeBuilder = () => {
               <Download className="w-4 h-4 mr-2" />
               Export PDF
             </Button>
+          </div>
           </div>
         </header>
 
@@ -221,8 +225,8 @@ export const ResumeBuilder = () => {
 
         <DragOverlay>
           {activeDragItem ? (
-            <div className="bg-white p-4 rounded-lg shadow-lg border-2 border-primary opacity-90">
-              <span className="text-sm font-medium">{activeDragItem.label}</span>
+            <div className="bg-card p-4 rounded-lg shadow-lg border-2 border-primary opacity-90">
+              <span className="text-sm font-medium text-card-foreground">{activeDragItem.label}</span>
             </div>
           ) : null}
         </DragOverlay>
