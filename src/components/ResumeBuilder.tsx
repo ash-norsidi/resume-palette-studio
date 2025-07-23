@@ -1,5 +1,15 @@
 import { useState } from 'react';
-import { DndContext, DragEndEvent, DragOverlay, DragStartEvent } from '@dnd-kit/core';
+import { 
+  DndContext, 
+  DragEndEvent, 
+  DragOverlay, 
+  DragStartEvent,
+  PointerSensor,
+  TouchSensor,
+  MouseSensor,
+  useSensor,
+  useSensors
+} from '@dnd-kit/core';
 import { Sidebar } from './Sidebar';
 import { Canvas } from './Canvas';
 import { ResumeSection, DragItem } from '../types/resume';
@@ -13,6 +23,28 @@ export const ResumeBuilder = () => {
   const [activeId, setActiveId] = useState<string | null>(null);
   const [activeDragItem, setActiveDragItem] = useState<DragItem | null>(null);
   const [selectedSectionId, setSelectedSectionId] = useState<string | null>(null);
+
+  // Configure sensors for both mouse and touch devices
+  const mouseSensor = useSensor(MouseSensor, {
+    activationConstraint: {
+      distance: 10,
+    },
+  });
+
+  const touchSensor = useSensor(TouchSensor, {
+    activationConstraint: {
+      delay: 250,
+      tolerance: 5,
+    },
+  });
+
+  const pointerSensor = useSensor(PointerSensor, {
+    activationConstraint: {
+      distance: 10,
+    },
+  });
+
+  const sensors = useSensors(mouseSensor, touchSensor, pointerSensor);
 
   const handleDragStart = (event: DragStartEvent) => {
     const { active } = event;
@@ -145,7 +177,7 @@ export const ResumeBuilder = () => {
 
   return (
     <div className="min-h-screen bg-gradient-canvas">
-      <DndContext onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
+      <DndContext sensors={sensors} onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
         {/* Header */}
         <header className="bg-sidebar border-b border-sidebar-border shadow-sm">
           <div className="flex items-center justify-between px-6 py-4">
