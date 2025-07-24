@@ -124,6 +124,9 @@
     --sidebar-accent-foreground: 240 4.8% 95.9%;
     --sidebar-border: 240 3.7% 15.9%;
     --sidebar-ring: 217.2 91.2% 59.8%;
+
+    --sidebar: 240 5.9% 10%;        /* Use the same value as --sidebar-background for dark mode */
+    --sidebar-border: 240 3.7% 15.9%;
     
     /* Dark mode gradients */
     --gradient-primary: linear-gradient(135deg, hsl(217 91% 60%), hsl(217 91% 70%));
