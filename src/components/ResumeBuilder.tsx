@@ -194,7 +194,7 @@ export const ResumeBuilder = () => {
     <div className="min-h-screen bg-gradient-canvas">
       <DndContext sensors={sensors} onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
         {/* Header */}
-        <header className="bg-sidebar border-b border-sidebar-border shadow-sm">
+        <header className="bg-sidebar dark:bg-sidebar border-b border-sidebar-border dark:border-sidebar-border shadow-sm">
           <div className="flex items-center justify-between px-6 py-4">
             <div className="flex items-center gap-3">
               <div className="p-2 bg-gradient-primary rounded-lg">
