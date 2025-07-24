@@ -3,7 +3,9 @@ import { Card } from './ui/card';
 import { Input } from './ui/input';
 import { Textarea } from './ui/textarea';
 import { Button } from './ui/button';
-import { Plus, Trash2 } from 'lucide-react';
+import { Plus, Trash2, GripVertical } from 'lucide-react';
+import { useSortable } from '@dnd-kit/sortable';
+import { CSS } from '@dnd-kit/utilities';
 
 interface ResumeSectionComponentProps {
   section: ResumeSection;
@@ -18,6 +20,14 @@ export const ResumeSectionComponent = ({
   onSelect,
   onUpdate
 }: ResumeSectionComponentProps) => {
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({ id: section.id });
   const handleInputChange = (field: string, value: any) => {
     onUpdate({ [field]: value });
   };
@@ -309,17 +319,35 @@ export const ResumeSectionComponent = ({
     }
   };
 
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+    opacity: isDragging ? 0.5 : 1,
+  };
+
   return (
     <Card
+      ref={setNodeRef}
+      style={style}
       className={`
-        p-6 cursor-pointer transition-all duration-normal hover:shadow-md
+        relative p-6 cursor-pointer transition-all duration-normal hover:shadow-md
         ${isSelected 
           ? 'ring-2 ring-primary ring-offset-2 shadow-element' 
           : 'border border-border hover:border-primary/50'
         }
+        ${isDragging ? 'z-10' : ''}
       `}
       onClick={onSelect}
     >
+      {/* Drag Handle */}
+      <div
+        {...attributes}
+        {...listeners}
+        className="absolute top-2 right-2 p-2 rounded-md hover:bg-muted/50 cursor-grab active:cursor-grabbing opacity-50 hover:opacity-100 transition-opacity"
+      >
+        <GripVertical className="w-4 h-4 text-muted-foreground" />
+      </div>
+      
       {renderSectionContent()}
     </Card>
   );

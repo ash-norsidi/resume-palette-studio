@@ -1,4 +1,5 @@
 import { useDroppable } from '@dnd-kit/core';
+import { SortableContext, verticalListSortingStrategy } from '@dnd-kit/sortable';
 import { ResumeSection } from '../types/resume';
 import { ResumeSectionComponent } from './ResumeSectionComponent';
 import { PropertyPanel } from './PropertyPanel';
@@ -61,15 +62,17 @@ export const Canvas = ({
               </div>
             ) : (
               <div className="p-8 space-y-4">
-                {sections.map((section) => (
-                  <ResumeSectionComponent
-                    key={section.id}
-                    section={section}
-                    isSelected={selectedSectionId === section.id}
-                    onSelect={() => setSelectedSectionId(section.id)}
-                    onUpdate={(data) => updateSection(section.id, data)}
-                  />
-                ))}
+                <SortableContext items={sections.map(s => s.id)} strategy={verticalListSortingStrategy}>
+                  {sections.map((section) => (
+                    <ResumeSectionComponent
+                      key={section.id}
+                      section={section}
+                      isSelected={selectedSectionId === section.id}
+                      onSelect={() => setSelectedSectionId(section.id)}
+                      onUpdate={(data) => updateSection(section.id, data)}
+                    />
+                  ))}
+                </SortableContext>
               </div>
             )}
           </div>

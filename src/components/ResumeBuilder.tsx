@@ -10,6 +10,7 @@ import {
   useSensor,
   useSensors
 } from '@dnd-kit/core';
+import { arrayMove } from '@dnd-kit/sortable';
 import { Sidebar } from './Sidebar';
 import { Canvas } from './Canvas';
 import { ResumeSection, DragItem } from '../types/resume';
@@ -65,7 +66,20 @@ export const ResumeBuilder = () => {
       return;
     }
 
-    // If dropping on canvas
+    // Handle reordering existing sections
+    if (active.id !== over.id) {
+      const activeIndex = sections.findIndex(section => section.id === active.id);
+      const overIndex = sections.findIndex(section => section.id === over.id);
+      
+      if (activeIndex !== -1 && overIndex !== -1) {
+        setSections(prev => arrayMove(prev, activeIndex, overIndex));
+        setActiveId(null);
+        setActiveDragItem(null);
+        return;
+      }
+    }
+
+    // If dropping on canvas (adding new section from sidebar)
     if (over.id === 'canvas') {
       const dragItem = active.data.current as DragItem;
       
