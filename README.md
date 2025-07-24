@@ -1,4 +1,4 @@
-# Resume Palette Studio
+# Resume Palette Studio (built with Lovable.Dev)
 
 Resume Palette Studio is a web application for building visually compelling, customizable resumes. Designed to make resume creation intuitive and flexible, it provides a drag-and-drop interface for assembling professional resume sections, real-time style adjustments, and export options.
 
