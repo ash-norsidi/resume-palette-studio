@@ -120,13 +120,15 @@ const generateEducationHTML = (data: any): string => {
   const items = data.items || [];
   const itemsHTML = items.map((item: any) => `
     <div style="margin-bottom: 15px;">
-      <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 5px;">
-        <h4 style="font-size: 16px; font-weight: 600; margin: 0; color: #1f2937;">${item.degree} in ${item.field}</h4>
-        <span style="font-size: 14px; color: #6b7280;">${item.startDate} - ${item.endDate}</span>
+      <div style="margin-bottom: 5px;">
+        <h4 style="font-size: 16px; font-weight: 600; margin: 0; color: #1f2937; float: left;">${item.degree} in ${item.field}</h4>
+        <span style="font-size: 14px; color: #6b7280; float: right;">${item.startDate} - ${item.endDate}</span>
+        <div style="clear: both;"></div>
       </div>
-      <div style="display: flex; justify-content: space-between; align-items: baseline;">
-        <span style="font-size: 15px; font-weight: 500; color: #374151;">${item.institution}</span>
-        <span style="font-size: 14px; color: #6b7280;">${item.location}</span>
+      <div>
+        <span style="font-size: 15px; font-weight: 500; color: #374151; float: left;">${item.institution}</span>
+        <span style="font-size: 14px; color: #6b7280; float: right;">${item.location}</span>
+        <div style="clear: both;"></div>
       </div>
       ${item.gpa ? `<p style="margin: 5px 0 0 0; font-size: 14px; color: #6b7280;">GPA: ${item.gpa}</p>` : ''}
     </div>
