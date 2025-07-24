@@ -174,6 +174,14 @@ export const ResumeBuilder = () => {
     ));
   };
 
+  const updateSectionSize = (sectionId: string, size: { width: number; height: number }) => {
+    setSections(prev => prev.map(section => 
+      section.id === sectionId 
+        ? { ...section, size: { ...section.size, ...size } }
+        : section
+    ));
+  };
+
   const deleteSection = (sectionId: string) => {
     setSections(prev => prev.filter(section => section.id !== sectionId));
     setSelectedSectionId(null);
@@ -232,6 +240,7 @@ export const ResumeBuilder = () => {
               setSelectedSectionId={setSelectedSectionId}
               updateSection={updateSection}
               updateSectionStyle={updateSectionStyle}
+              updateSectionSize={updateSectionSize}
               deleteSection={deleteSection}
             />
           </main>

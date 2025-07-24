@@ -196,4 +196,49 @@
   .transition-smooth {
     transition: all var(--duration-normal) cubic-bezier(0.4, 0, 0.2, 1);
   }
+
+  /* React Resizable Custom Styles */
+  .react-resizable-handle {
+    position: absolute;
+    width: 16px;
+    height: 16px;
+    background: hsl(var(--background));
+    border: 2px solid hsl(var(--primary));
+    border-radius: 50%;
+    z-index: 999;
+    opacity: 0;
+    transition: opacity var(--duration-normal) ease;
+  }
+
+  .react-resizable:hover .react-resizable-handle {
+    opacity: 1;
+  }
+
+  .react-resizable-handle-se {
+    bottom: -8px;
+    right: -8px;
+    cursor: se-resize;
+  }
+
+  .react-resizable-handle-se::after {
+    content: '';
+    position: absolute;
+    width: 6px;
+    height: 6px;
+    background: hsl(var(--primary));
+    border-radius: 50%;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+
+  .react-resizable-handle:hover {
+    border-color: hsl(var(--primary-hover));
+    background: hsl(var(--primary));
+    box-shadow: var(--shadow-sm);
+  }
+
+  .react-resizable-handle:hover::after {
+    background: hsl(var(--primary-foreground));
+  }
 }

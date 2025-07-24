@@ -11,6 +11,7 @@ interface CanvasProps {
   setSelectedSectionId: (id: string | null) => void;
   updateSection: (sectionId: string, data: any) => void;
   updateSectionStyle: (sectionId: string, style: any) => void;
+  updateSectionSize: (sectionId: string, size: { width: number; height: number }) => void;
   deleteSection: (sectionId: string) => void;
 }
 
@@ -21,6 +22,7 @@ export const Canvas = ({
   setSelectedSectionId,
   updateSection,
   updateSectionStyle,
+  updateSectionSize,
   deleteSection
 }: CanvasProps) => {
   const { isOver, setNodeRef } = useDroppable({
@@ -70,6 +72,7 @@ export const Canvas = ({
                       isSelected={selectedSectionId === section.id}
                       onSelect={() => setSelectedSectionId(section.id)}
                       onUpdate={(data) => updateSection(section.id, data)}
+                      onResize={(size) => updateSectionSize(section.id, size)}
                     />
                   ))}
                 </SortableContext>

@@ -6,19 +6,23 @@ import { Button } from './ui/button';
 import { Plus, Trash2, GripVertical } from 'lucide-react';
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
+import { Resizable } from 'react-resizable';
+import 'react-resizable/css/styles.css';
 
 interface ResumeSectionComponentProps {
   section: ResumeSection;
   isSelected: boolean;
   onSelect: () => void;
   onUpdate: (data: any) => void;
+  onResize: (size: { width: number; height: number }) => void;
 }
 
 export const ResumeSectionComponent = ({
   section,
   isSelected,
   onSelect,
-  onUpdate
+  onUpdate,
+  onResize
 }: ResumeSectionComponentProps) => {
   const {
     attributes,
@@ -325,30 +329,50 @@ export const ResumeSectionComponent = ({
     opacity: isDragging ? 0.5 : 1,
   };
 
+  const currentWidth = typeof section.size.width === 'number' ? section.size.width : 400;
+  const currentHeight = typeof section.size.height === 'number' ? section.size.height : 200;
+
   return (
-    <Card
-      ref={setNodeRef}
-      style={style}
-      className={`
-        relative p-6 cursor-pointer transition-all duration-normal hover:shadow-md
-        ${isSelected 
-          ? 'ring-2 ring-primary ring-offset-2 shadow-element' 
-          : 'border border-border hover:border-primary/50'
-        }
-        ${isDragging ? 'z-10' : ''}
-      `}
-      onClick={onSelect}
+    <Resizable
+      width={currentWidth}
+      height={currentHeight}
+      onResize={(e, { size }) => {
+        onResize({ width: size.width, height: size.height });
+      }}
+      minConstraints={[200, 100]}
+      maxConstraints={[800, 600]}
+      resizeHandles={['se']}
     >
-      {/* Drag Handle */}
-      <div
-        {...attributes}
-        {...listeners}
-        className="absolute top-2 right-2 p-2 rounded-md hover:bg-muted/50 cursor-grab active:cursor-grabbing opacity-50 hover:opacity-100 transition-opacity"
+      <Card
+        ref={setNodeRef}
+        style={{
+          ...style,
+          width: currentWidth,
+          height: currentHeight,
+        }}
+        className={`
+          relative p-6 cursor-pointer transition-all duration-normal hover:shadow-md
+          ${isSelected 
+            ? 'ring-2 ring-primary ring-offset-2 shadow-element' 
+            : 'border border-border hover:border-primary/50'
+          }
+          ${isDragging ? 'z-10' : ''}
+        `}
+        onClick={onSelect}
       >
-        <GripVertical className="w-4 h-4 text-muted-foreground" />
-      </div>
-      
-      {renderSectionContent()}
-    </Card>
+        {/* Drag Handle */}
+        <div
+          {...attributes}
+          {...listeners}
+          className="absolute top-2 right-2 p-2 rounded-md hover:bg-muted/50 cursor-grab active:cursor-grabbing opacity-50 hover:opacity-100 transition-opacity z-10"
+        >
+          <GripVertical className="w-4 h-4 text-muted-foreground" />
+        </div>
+        
+        <div className="h-full overflow-auto">
+          {renderSectionContent()}
+        </div>
+      </Card>
+    </Resizable>
   );
 };
