@@ -69,7 +69,7 @@ To connect a custom domain (when using Lovable):
 
 ## License
 
-_No license specified. Please consult the repository owner for usage rights._
+MIT License
 
 ---
 
