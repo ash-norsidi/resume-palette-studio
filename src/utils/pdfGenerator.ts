@@ -4,14 +4,16 @@ import { ResumeSection } from '../types/resume';
 export const generatePDF = async (sections: ResumeSection[]): Promise<void> => {
   // Create a temporary container for PDF generation
   const container = document.createElement('div');
-  container.style.width = '8.5in';
-  container.style.minHeight = '11in';
+  container.style.width = '7.5in'; // Reduced to account for PDF margins
+  container.style.minHeight = '10in';
   container.style.padding = '0.5in';
   container.style.backgroundColor = 'white';
   container.style.fontFamily = 'Inter, sans-serif';
   container.style.fontSize = '14px';
   container.style.lineHeight = '1.5';
   container.style.color = '#000';
+  container.style.boxSizing = 'border-box';
+  container.style.overflow = 'hidden';
 
   // Generate HTML content from sections
   sections.forEach(section => {
@@ -92,13 +94,15 @@ const generateExperienceHTML = (data: any): string => {
   const items = data.items || [];
   const itemsHTML = items.map((item: any) => `
     <div style="margin-bottom: 20px;">
-      <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 5px;">
-        <h4 style="font-size: 16px; font-weight: 600; margin: 0; color: #1f2937;">${item.position}</h4>
-        <span style="font-size: 14px; color: #6b7280;">${item.startDate} - ${item.endDate}</span>
+      <div style="margin-bottom: 5px;">
+        <h4 style="font-size: 16px; font-weight: 600; margin: 0; color: #1f2937; float: left;">${item.position}</h4>
+        <span style="font-size: 14px; color: #6b7280; float: right;">${item.startDate} - ${item.endDate}</span>
+        <div style="clear: both;"></div>
       </div>
-      <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 8px;">
-        <span style="font-size: 15px; font-weight: 500; color: #374151;">${item.company}</span>
-        <span style="font-size: 14px; color: #6b7280;">${item.location}</span>
+      <div style="margin-bottom: 8px;">
+        <span style="font-size: 15px; font-weight: 500; color: #374151; float: left;">${item.company}</span>
+        <span style="font-size: 14px; color: #6b7280; float: right;">${item.location}</span>
+        <div style="clear: both;"></div>
       </div>
       <p style="margin: 0; text-align: justify; line-height: 1.5; color: #4b5563;">${item.description}</p>
     </div>
