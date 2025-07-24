@@ -108,7 +108,7 @@ function DraggableItem({ item, type }: { item: any; type: 'section' | 'element' 
       style={style}
     >
       <div className="flex items-start gap-3">
-        <div className="p-2 bg-primary-light rounded-md">
+        <div className="p-2 bg-primary-background rounded-md">
           <Icon className="w-4 h-4 text-primary" />
         </div>
         <div className="flex-1 min-w-0">
