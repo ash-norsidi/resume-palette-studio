@@ -29,20 +29,20 @@ export const ResumeBuilder = () => {
   // Configure sensors for both mouse and touch devices
   const mouseSensor = useSensor(MouseSensor, {
     activationConstraint: {
-      distance: 10,
+      distance: 15, // Increased distance to avoid conflicts with resize handles
     },
   });
 
   const touchSensor = useSensor(TouchSensor, {
     activationConstraint: {
-      delay: 250,
-      tolerance: 5,
+      delay: 300, // Increased delay
+      tolerance: 8,
     },
   });
 
   const pointerSensor = useSensor(PointerSensor, {
     activationConstraint: {
-      distance: 10,
+      distance: 15, // Increased distance to avoid conflicts with resize handles
     },
   });
 
