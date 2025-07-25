@@ -362,7 +362,7 @@ export const ResumeSectionComponent = ({
           `}
           onClick={onSelect}
         >
-          {/* Drag Handle */}
+          {/* Drag Handle - Only this area triggers drag */}
           <div
             {...attributes}
             {...listeners}
