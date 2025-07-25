@@ -88,7 +88,7 @@ export const ResumeBuilder = () => {
           id: `${dragItem.sectionType}-${Date.now()}`,
           type: dragItem.sectionType,
           position: { x: 50, y: 50 + sections.length * 100 },
-          size: { width: 400, height: 'auto' },
+          size: { width: 400, height: 200 },
           data: getInitialSectionData(dragItem.sectionType),
           style: {
             fontSize: 14,

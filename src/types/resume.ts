@@ -4,8 +4,8 @@ export interface Position {
 }
 
 export interface Size {
-  width: number | string;
-  height: number | string;
+  width: number;
+  height: number;
 }
 
 export interface SectionStyle {
