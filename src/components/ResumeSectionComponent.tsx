@@ -31,7 +31,13 @@ export const ResumeSectionComponent = ({
     transform,
     transition,
     isDragging,
-  } = useSortable({ id: section.id });
+  } = useSortable({ 
+    id: section.id,
+    data: {
+      type: 'section',
+      section
+    }
+  });
   const handleInputChange = (field: string, value: any) => {
     onUpdate({ [field]: value });
   };
@@ -338,6 +344,16 @@ export const ResumeSectionComponent = ({
       style={style}
       className={`relative ${isDragging ? 'z-10' : ''}`}
     >
+      {/* Drag Handle - Positioned outside of the resizable area */}
+      <div
+        {...attributes}
+        {...listeners}
+        className="absolute -top-3 -right-3 p-2 bg-primary rounded-full hover:bg-primary/80 cursor-grab active:cursor-grabbing shadow-element transition-all duration-normal z-30 border-2 border-background"
+        style={{ transform: 'translate(0, 0)' }} // Prevent drag transform from affecting this
+      >
+        <GripVertical className="w-4 h-4 text-primary-foreground" />
+      </div>
+
       <Resizable
         width={currentWidth}
         height={currentHeight}
@@ -361,16 +377,7 @@ export const ResumeSectionComponent = ({
             }
           `}
           onClick={onSelect}
-        >
-          {/* Drag Handle - Only this area triggers drag */}
-          <div
-            {...attributes}
-            {...listeners}
-            className="absolute top-2 right-2 p-2 rounded-md hover:bg-muted/50 cursor-grab active:cursor-grabbing opacity-50 hover:opacity-100 transition-opacity z-20"
-          >
-            <GripVertical className="w-4 h-4 text-muted-foreground" />
-          </div>
-          
+        >          
           <div className="h-full overflow-auto">
             {renderSectionContent()}
           </div>

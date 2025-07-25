@@ -26,23 +26,23 @@ export const ResumeBuilder = () => {
   const [activeDragItem, setActiveDragItem] = useState<DragItem | null>(null);
   const [selectedSectionId, setSelectedSectionId] = useState<string | null>(null);
 
-  // Configure sensors for both mouse and touch devices
+  // Configure sensors with more restrictive activation - only activate on specific handle
   const mouseSensor = useSensor(MouseSensor, {
     activationConstraint: {
-      distance: 15, // Increased distance to avoid conflicts with resize handles
+      distance: 8,
     },
   });
 
   const touchSensor = useSensor(TouchSensor, {
     activationConstraint: {
-      delay: 300, // Increased delay
-      tolerance: 8,
+      delay: 250,
+      tolerance: 5,
     },
   });
 
   const pointerSensor = useSensor(PointerSensor, {
     activationConstraint: {
-      distance: 15, // Increased distance to avoid conflicts with resize handles
+      distance: 8,
     },
   });
 
