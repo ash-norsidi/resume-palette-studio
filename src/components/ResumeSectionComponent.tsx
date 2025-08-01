@@ -353,6 +353,22 @@ export const ResumeSectionComponent = ({
       {/* Isolated Drag Handle - Only this handle triggers drag */}
       <DragHandle attributes={attributes} listeners={listeners} isDragging={isDragging} />
 
+      {/* Delete (x) button */}
+      {isSelected && (
+        <button
+          className="absolute top-2 left-2 z-20 bg-white/90 hover:bg-tech-pink text-tech-charcoal hover:text-white rounded-full shadow p-1 transition"
+          style={{ minWidth: 28, minHeight: 28 }}
+          onClick={(e) => {
+            e.stopPropagation(); // Prevent section selection on delete click
+            onDelete(sectionId);
+          }}
+          aria-label="Remove section"
+          type="button"
+        >
+          ×
+        </button>
+      )}
+      
       <Resizable
         width={currentWidth}
         height={currentHeight}
