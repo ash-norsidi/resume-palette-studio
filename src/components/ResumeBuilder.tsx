@@ -15,7 +15,7 @@ import { Sidebar } from './Sidebar';
 import { Canvas } from './Canvas';
 import { ResumeSection, DragItem, SectionType } from '../types/resume';
 import { Button } from './ui/button';
-import { Download } from 'lucide-react';
+import { Download, FileText } from 'lucide-react';
 import { generatePDF } from '../utils/pdfGenerator';
 import { toast } from 'sonner';
 import { ThemeToggle } from './ThemeToggle';
