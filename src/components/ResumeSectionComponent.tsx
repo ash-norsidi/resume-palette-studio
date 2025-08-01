@@ -7,6 +7,8 @@ import { Plus, Trash2 } from 'lucide-react';
 import { Resizable } from 'react-resizable';
 import 'react-resizable/css/styles.css';
 import { DragHandle } from './DragHandle';
+import { useSortable } from '@dnd-kit/sortable';
+import { CSS } from '@dnd-kit/utilities';
 
 interface ResumeSectionComponentProps {
   section: ResumeSection;
@@ -23,6 +25,21 @@ export const ResumeSectionComponent = ({
   onUpdate,
   onResize
 }: ResumeSectionComponentProps) => {
+  // Use useSortable for the container - but only apply listeners to the drag handle
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({ 
+    id: section.id,
+    data: {
+      type: 'section',
+      section
+    }
+  });
   const handleInputChange = (field: string, value: any) => {
     onUpdate({ [field]: value });
   };
@@ -314,13 +331,23 @@ export const ResumeSectionComponent = ({
     }
   };
 
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+    opacity: isDragging ? 0.5 : 1,
+  };
+
   const currentWidth = typeof section.size.width === 'number' ? section.size.width : 400;
   const currentHeight = typeof section.size.height === 'number' ? section.size.height : 200;
 
   return (
-    <div className="relative">
-      {/* Isolated Drag Handle - Only this component handles DnD */}
-      <DragHandle section={section} />
+    <div 
+      ref={setNodeRef}
+      style={style}
+      className={`relative ${isDragging ? 'z-10' : ''}`}
+    >
+      {/* Isolated Drag Handle - Only this handle triggers drag */}
+      <DragHandle attributes={attributes} listeners={listeners} isDragging={isDragging} />
 
       <Resizable
         width={currentWidth}

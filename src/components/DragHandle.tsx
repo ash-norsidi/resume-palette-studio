@@ -1,28 +1,14 @@
-import { useSortable } from '@dnd-kit/sortable';
 import { GripVertical } from 'lucide-react';
-import { ResumeSection } from '../types/resume';
 
 interface DragHandleProps {
-  section: ResumeSection;
+  attributes: any;
+  listeners: any;
+  isDragging?: boolean;
 }
 
-export const DragHandle = ({ section }: DragHandleProps) => {
-  const {
-    attributes,
-    listeners,
-    setNodeRef,
-    isDragging,
-  } = useSortable({ 
-    id: section.id,
-    data: {
-      type: 'section',
-      section
-    }
-  });
-
+export const DragHandle = ({ attributes, listeners, isDragging }: DragHandleProps) => {
   return (
     <div
-      ref={setNodeRef}
       {...attributes}
       {...listeners}
       className={`
