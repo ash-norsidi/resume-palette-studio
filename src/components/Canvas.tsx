@@ -73,6 +73,8 @@ export const Canvas = ({
                       onSelect={() => setSelectedSectionId(section.id)}
                       onUpdate={(data) => updateSection(section.id, data)}
                       onResize={(size) => updateSectionSize(section.id, size)}
+                      sectionId={section.id}
+                      onDelete={deleteSection}
                     />
                   ))}
                 </SortableContext>
