@@ -25,7 +25,9 @@ export const ResumeSectionComponent = ({
   isSelected,
   onSelect,
   onUpdate,
-  onResize
+  onResize,
+  sectionId,
+  onDelete
 }: ResumeSectionComponentProps) => {
   // Use useSortable for the container - but only apply listeners to the drag handle
   const {
