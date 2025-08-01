@@ -16,6 +16,8 @@ interface ResumeSectionComponentProps {
   onSelect: () => void;
   onUpdate: (data: any) => void;
   onResize: (size: { width: number; height: number }) => void;
+  sectionId: string;
+  onDelete: (sectionId: string) => void;
 }
 
 export const ResumeSectionComponent = ({
