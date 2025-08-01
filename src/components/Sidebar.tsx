@@ -73,7 +73,7 @@ const basicElements = [
   }
 ];
 
-function DraggableItem({ item, type }: { item: any; type: 'section' | 'element' }) {
+function DraggableItem({ item, type, onAddSection }: { item: any; type: 'section' | 'element'; onAddSection?: (sectionType: string, label: string) => void }) {
   const dragItem: DragItem = {
     type: 'section',
     sectionType: item.id,
@@ -97,14 +97,24 @@ function DraggableItem({ item, type }: { item: any; type: 'section' | 'element' 
 
   const Icon = item.icon;
 
+  const handleClick = (e: React.MouseEvent) => {
+    // Only trigger click if not dragging and onAddSection is provided
+    if (onAddSection && type === 'section') {
+      e.preventDefault();
+      e.stopPropagation();
+      onAddSection(item.id, item.label);
+    }
+  };
+
   return (
     <Card
       ref={setNodeRef}
       {...attributes}
       {...listeners}
+      onClick={handleClick}
       className={`p-4 cursor-grab active:cursor-grabbing transition-all duration-normal hover:shadow-md border border-border/50 hover:border-primary/50 ${
         isDragging ? 'opacity-50 scale-105 rotate-1' : ''
-      }`}
+      } ${onAddSection && type === 'section' ? 'hover:bg-primary/5' : ''}`}
       style={style}
     >
       <div className="flex items-start gap-3">
@@ -124,7 +134,7 @@ function DraggableItem({ item, type }: { item: any; type: 'section' | 'element' 
   );
 }
 
-export const Sidebar = () => {
+export const Sidebar = ({ onAddSection }: { onAddSection?: (sectionType: string, label: string) => void }) => {
   return (
     <aside className="w-80 bg-gradient-sidebar border-r border-sidebar-border h-screen overflow-y-auto">
       <div className="p-6">
@@ -140,6 +150,7 @@ export const Sidebar = () => {
                   key={section.id}
                   item={section}
                   type="section"
+                  onAddSection={onAddSection}
                 />
               ))}
             </div>
@@ -165,7 +176,7 @@ export const Sidebar = () => {
           <div className="bg-primary-light/30 p-4 rounded-lg border border-primary/20">
             <h4 className="font-medium text-primary mb-2">💡 Quick Tips</h4>
             <ul className="text-sm text-muted-foreground space-y-1">
-              <li>• Drag sections to the canvas to add them</li>
+              <li>• Drag or click sections to add them</li>
               <li>• Click elements to edit their content</li>
               <li>• Use the property panel to customize styling</li>
               <li>• Export to PDF when ready</li>

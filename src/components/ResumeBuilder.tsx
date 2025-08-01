@@ -13,7 +13,7 @@ import {
 import { arrayMove } from '@dnd-kit/sortable';
 import { Sidebar } from './Sidebar';
 import { Canvas } from './Canvas';
-import { ResumeSection, DragItem } from '../types/resume';
+import { ResumeSection, DragItem, SectionType } from '../types/resume';
 import { Button } from './ui/button';
 import { Download, FileText } from 'lucide-react';
 import { generatePDF } from '../utils/pdfGenerator';
@@ -182,6 +182,34 @@ export const ResumeBuilder = () => {
     ));
   };
 
+  const addSectionByClick = (sectionType: string, label: string) => {
+    // Validate sectionType
+    const validSectionTypes = ['header', 'summary', 'experience', 'education', 'skills'];
+    if (!validSectionTypes.includes(sectionType)) {
+      toast.error('Invalid section type');
+      return;
+    }
+
+    const newSection: ResumeSection = {
+      id: `${sectionType}-${Date.now()}`,
+      type: sectionType as SectionType,
+      position: { x: 50, y: 50 + sections.length * 100 },
+      size: { width: 400, height: 200 },
+      data: getInitialSectionData(sectionType),
+      style: {
+        fontSize: 14,
+        fontWeight: 400,
+        color: '#000000',
+        backgroundColor: 'transparent',
+        padding: 16,
+        marginBottom: 16,
+      }
+    };
+    
+    setSections(prev => [...prev, newSection]);
+    toast.success(`${label} section added to resume`);
+  };
+
   const deleteSection = (sectionId: string) => {
     setSections(prev => prev.filter(section => section.id !== sectionId));
     setSelectedSectionId(null);
@@ -229,7 +257,7 @@ export const ResumeBuilder = () => {
 
         <div className="flex">
           {/* Sidebar */}
-          <Sidebar />
+          <Sidebar onAddSection={addSectionByClick} />
           
           {/* Main Content */}
           <main className="flex-1">
