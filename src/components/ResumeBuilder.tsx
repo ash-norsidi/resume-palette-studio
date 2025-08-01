@@ -26,7 +26,7 @@ export const ResumeBuilder = () => {
   const [activeDragItem, setActiveDragItem] = useState<DragItem | null>(null);
   const [selectedSectionId, setSelectedSectionId] = useState<string | null>(null);
 
-  // Configure sensors with more restrictive activation - only activate on specific handle
+  // Configure sensors to only activate on drag handles (elements with data-dnd-handle)
   const mouseSensor = useSensor(MouseSensor, {
     activationConstraint: {
       distance: 8,
