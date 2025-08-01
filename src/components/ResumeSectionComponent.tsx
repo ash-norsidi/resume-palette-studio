@@ -3,11 +3,10 @@ import { Card } from './ui/card';
 import { Input } from './ui/input';
 import { Textarea } from './ui/textarea';
 import { Button } from './ui/button';
-import { Plus, Trash2, GripVertical } from 'lucide-react';
-import { useSortable } from '@dnd-kit/sortable';
-import { CSS } from '@dnd-kit/utilities';
+import { Plus, Trash2 } from 'lucide-react';
 import { Resizable } from 'react-resizable';
 import 'react-resizable/css/styles.css';
+import { DragHandle } from './DragHandle';
 
 interface ResumeSectionComponentProps {
   section: ResumeSection;
@@ -24,20 +23,6 @@ export const ResumeSectionComponent = ({
   onUpdate,
   onResize
 }: ResumeSectionComponentProps) => {
-  const {
-    attributes,
-    listeners,
-    setNodeRef,
-    transform,
-    transition,
-    isDragging,
-  } = useSortable({ 
-    id: section.id,
-    data: {
-      type: 'section',
-      section
-    }
-  });
   const handleInputChange = (field: string, value: any) => {
     onUpdate({ [field]: value });
   };
@@ -329,30 +314,13 @@ export const ResumeSectionComponent = ({
     }
   };
 
-  const style = {
-    transform: CSS.Transform.toString(transform),
-    transition,
-    opacity: isDragging ? 0.5 : 1,
-  };
-
   const currentWidth = typeof section.size.width === 'number' ? section.size.width : 400;
   const currentHeight = typeof section.size.height === 'number' ? section.size.height : 200;
 
   return (
-    <div
-      ref={setNodeRef}
-      style={style}
-      className={`relative ${isDragging ? 'z-10' : ''}`}
-    >
-      {/* Drag Handle - Positioned outside of the resizable area */}
-      <div
-        {...attributes}
-        {...listeners}
-        className="absolute -top-3 -right-3 p-2 bg-primary rounded-full hover:bg-primary/80 cursor-grab active:cursor-grabbing shadow-element transition-all duration-normal z-30 border-2 border-background"
-        style={{ transform: 'translate(0, 0)' }} // Prevent drag transform from affecting this
-      >
-        <GripVertical className="w-4 h-4 text-primary-foreground" />
-      </div>
+    <div className="relative">
+      {/* Isolated Drag Handle - Only this component handles DnD */}
+      <DragHandle section={section} />
 
       <Resizable
         width={currentWidth}
