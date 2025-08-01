@@ -355,18 +355,23 @@ export const ResumeSectionComponent = ({
 
       {/* Delete (x) button */}
       {isSelected && (
-        <button
-          className="absolute top-2 left-2 z-20 bg-white/90 hover:bg-tech-pink text-tech-charcoal hover:text-white rounded-full shadow p-1 transition"
+        <Button
+          size="icon"
+          variant="ghost"
+          className="absolute top-2 left-2 z-20 rounded-full 
+            text-destructive hover:bg-destructive/80 hover:text-white 
+            bg-background/70 backdrop-blur
+            border border-border shadow"
           style={{ minWidth: 28, minHeight: 28 }}
-          onClick={(e) => {
-            e.stopPropagation(); // Prevent section selection on delete click
+          onClick={e => {
+            e.stopPropagation();
             onDelete(sectionId);
           }}
           aria-label="Remove section"
           type="button"
         >
           ×
-        </button>
+        </Button>
       )}
       
       <Resizable
