@@ -63,21 +63,19 @@ export const Canvas = ({
                 </div>
               </div>
             ) : (
-              <div className="p-8 space-y-4">
-                <SortableContext items={sections.map(s => s.id)} strategy={verticalListSortingStrategy}>
-                  {sections.map((section) => (
-                    <ResumeSectionComponent
-                      key={section.id}
-                      section={section}
-                      isSelected={selectedSectionId === section.id}
-                      onSelect={() => setSelectedSectionId(section.id)}
-                      onUpdate={(data) => updateSection(section.id, data)}
-                      onResize={(size) => updateSectionSize(section.id, size)}
-                      sectionId={section.id}
-                      onDelete={deleteSection}
-                    />
-                  ))}
-                </SortableContext>
+              <div className="relative min-h-[800px] bg-background rounded-lg shadow-lg border-2 border-dashed transition-all duration-normal">
+                {sections.map(section => (
+                  <ResumeSectionComponent
+                    key={section.id}
+                    section={section}
+                    isSelected={selectedSectionId === section.id}
+                    onSelect={() => setSelectedSectionId(section.id)}
+                    onUpdate={data => updateSection(section.id, data)}
+                    onResize={size => updateSectionSize(section.id, size)}
+                    sectionId={section.id}
+                    onDelete={deleteSection}
+                  />
+                ))}
               </div>
             )}
           </div>
