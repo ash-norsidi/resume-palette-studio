@@ -44,6 +44,7 @@ export const ResumeSectionComponent = ({
       section
     }
   });
+
   const handleInputChange = (field: string, value: any) => {
     onUpdate({ [field]: value });
   };
@@ -335,20 +336,28 @@ export const ResumeSectionComponent = ({
     }
   };
 
+  // Absolute positioning for grid/flexible layout
   const style = {
     transform: CSS.Transform.toString(transform),
     transition,
     opacity: isDragging ? 0.5 : 1,
+    position: 'absolute',
+    left: section.position.x,
+    top: section.position.y,
+    width: section.size.width,
+    height: section.size.height,
+    // Allow pointer events to interact with the component
+    pointerEvents: 'auto',
+    // Optional: add a minWidth/minHeight if desired
+    minWidth: 200,
+    minHeight: 100
   };
-
-  const currentWidth = typeof section.size.width === 'number' ? section.size.width : 400;
-  const currentHeight = typeof section.size.height === 'number' ? section.size.height : 200;
 
   return (
     <div 
       ref={setNodeRef}
       style={style}
-      className={`relative ${isDragging ? 'z-10' : ''}`}
+      className={`resume-section ${isDragging ? 'z-10' : ''}`}
     >
       {/* Delete (x) button */}
       {isSelected && (
@@ -372,8 +381,8 @@ export const ResumeSectionComponent = ({
       )}
       
       <Resizable
-        width={currentWidth}
-        height={currentHeight}
+        width={section.size.width}
+        height={section.size.height}
         onResize={(e, { size }) => {
           onResize({ width: size.width, height: size.height });
         }}
@@ -383,8 +392,8 @@ export const ResumeSectionComponent = ({
       >
         <Card
           style={{
-            width: currentWidth,
-            height: currentHeight,
+            width: section.size.width,
+            height: section.size.height,
           }}
           className={`
             relative p-6 cursor-pointer transition-all duration-normal hover:shadow-md
@@ -399,7 +408,6 @@ export const ResumeSectionComponent = ({
           <div className="absolute top-2 right-2 z-20">
             <DragHandle attributes={attributes} listeners={listeners} isDragging={isDragging} />
           </div>
-          
           <div className="h-full overflow-auto">
             {renderSectionContent()}
           </div>
