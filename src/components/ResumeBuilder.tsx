@@ -1,16 +1,14 @@
 import { useState } from 'react';
-import { 
+import {
   DndContext,
-  DragEndEvent,
   DragOverlay,
   DragStartEvent,
+  DragEndEvent,
   PointerSensor,
-  TouchSensor,
-  MouseSensor,
   useSensor,
-  useSensors
+  useSensors,
 } from '@dnd-kit/core';
-import { restrictToParentElement } from '@dnd-kit/modifiers';
+import { restrictToParentElement, snapCenterToCursor } from '@dnd-kit/modifiers';
 import { Sidebar } from './Sidebar';
 import { Canvas } from './Canvas';
 import { ResumeSection, DragItem, SectionType } from '../types/resume';
@@ -20,71 +18,63 @@ import { generatePDF } from '../utils/pdfGenerator';
 import { toast } from 'sonner';
 import { ThemeToggle } from './ThemeToggle';
 
-// === STATE SETUP ===
+// === GRID SETTINGS (for snapping) ===
+const GRID_SIZE = 30; // px, change for finer/coarser grid
+
+// === HELPER: snap position to grid ===
+function snapToGrid(x: number, y: number): { x: number; y: number } {
+  return {
+    x: Math.round(x / GRID_SIZE) * GRID_SIZE,
+    y: Math.round(y / GRID_SIZE) * GRID_SIZE,
+  };
+}
+
 export const ResumeBuilder = () => {
   const [sections, setSections] = useState<ResumeSection[]>([]);
   const [activeId, setActiveId] = useState<string | null>(null);
   const [activeDragItem, setActiveDragItem] = useState<DragItem | null>(null);
-  const [dragOffset, setDragOffset] = useState<{ x: number; y: number } | null>(null); // CHANGE: track drag offset
+  const [dragOrigin, setDragOrigin] = useState<{ x: number; y: number } | null>(null);
   const [selectedSectionId, setSelectedSectionId] = useState<string | null>(null);
 
-  // DnD sensors
-  const mouseSensor = useSensor(MouseSensor, {
-    activationConstraint: { distance: 8 },
-  });
-  const touchSensor = useSensor(TouchSensor, {
-    activationConstraint: { delay: 250, tolerance: 5 },
-  });
+  // Sensors for pointer device
   const pointerSensor = useSensor(PointerSensor, {
     activationConstraint: { distance: 8 },
   });
-  const sensors = useSensors(mouseSensor, touchSensor, pointerSensor);
+  const sensors = useSensors(pointerSensor);
 
-  // === DnD-LAYOUT CHANGE ===
-  // Instead of reordering, we update the section's .position property!
+  // === DND LOGIC FOR ABSOLUTE POSITIONING AND GRID SNAP ===
   const handleDragStart = (event: DragStartEvent) => {
-    const { active } = event;
-    setActiveId(active.id as string);
-
-    // Find the section being dragged and record pointer offset
-    const dragSection = sections.find(s => s.id === active.id);
-    if (dragSection) {
-      // Get mouse position relative to section
-      const pointerX = event.activatorEvent instanceof MouseEvent ? event.activatorEvent.clientX : 0;
-      const pointerY = event.activatorEvent instanceof MouseEvent ? event.activatorEvent.clientY : 0;
-      setDragOffset({
-        x: pointerX - dragSection.position.x,
-        y: pointerY - dragSection.position.y
-      });
+    const section = sections.find(s => s.id === event.active.id);
+    if (section) {
+      setDragOrigin({ x: section.position.x, y: section.position.y });
     }
+    setActiveId(event.active.id as string);
 
-    // For DragOverlay
-    const dragItem = active.data.current as DragItem;
+    // Drag overlay
+    const dragItem = event.active.data.current as DragItem;
     setActiveDragItem(dragItem);
   };
 
   const handleDragEnd = (event: DragEndEvent) => {
-    // Only move by x/y, not reorder array
-    if (!event.active.id) {
+    if (!activeId || !dragOrigin) {
       setActiveId(null);
       setActiveDragItem(null);
-      setDragOffset(null);
+      setDragOrigin(null);
       return;
     }
 
-    // Find pointer position
-    const pointerX = event.activatorEvent instanceof MouseEvent ? event.activatorEvent.clientX : 0;
-    const pointerY = event.activatorEvent instanceof MouseEvent ? event.activatorEvent.clientY : 0;
-
-    // Find drag offset and update section position
-    if (dragOffset) {
-      const newX = pointerX - dragOffset.x;
-      const newY = pointerY - dragOffset.y;
+    // Get drop coordinates relative to the canvas
+    const { delta } = event; // DnD Kit passes pointer movement delta
+    if (delta) {
+      let newX = dragOrigin.x + delta.x;
+      let newY = dragOrigin.y + delta.y;
+      // === SNAP TO GRID ===
+      const snapped = snapToGrid(newX, newY);
 
       setSections(prev =>
         prev.map(section =>
-          section.id === event.active.id
-            ? { ...section, position: { x: newX, y: newY } }
+          section.id === activeId
+            ? { ...section, position: snapped }
             : section
         )
       );
@@ -92,7 +82,7 @@ export const ResumeBuilder = () => {
 
     setActiveId(null);
     setActiveDragItem(null);
-    setDragOffset(null);
+    setDragOrigin(null);
   };
 
   // === Section update helpers ===
@@ -117,7 +107,6 @@ export const ResumeBuilder = () => {
         : section
     ));
   };
-  // CHANGE: new updater for position (for external uses)
   const updateSectionPosition = (sectionId: string, position: { x: number; y: number }) => {
     setSections(prev => prev.map(section =>
       section.id === sectionId
@@ -126,19 +115,18 @@ export const ResumeBuilder = () => {
     ));
   };
 
-  // === Add/delete/export helpers (no change for DnD) ===
   const addSectionByClick = (sectionType: string, label: string) => {
-    // Validate sectionType
     const validSectionTypes = ['header', 'summary', 'experience', 'education', 'skills'];
     if (!validSectionTypes.includes(sectionType)) {
       toast.error('Invalid section type');
       return;
     }
-
+    // Place new section at next available grid position
+    const nextY = 50 + sections.length * GRID_SIZE * 4;
     const newSection: ResumeSection = {
       id: `${sectionType}-${Date.now()}`,
       type: sectionType as SectionType,
-      position: { x: 50, y: 50 + sections.length * 100 }, // CHANGE: initial position
+      position: { x: 50, y: nextY },
       size: { width: 400, height: 200 },
       data: getInitialSectionData(sectionType),
       style: {
@@ -150,7 +138,6 @@ export const ResumeBuilder = () => {
         marginBottom: 16,
       }
     };
-
     setSections(prev => [...prev, newSection]);
     toast.success(`${label} section added to resume`);
   };
@@ -170,7 +157,6 @@ export const ResumeBuilder = () => {
     }
   };
 
-  // === Section Data Generator (unchanged) ===
   const getInitialSectionData = (type: string) => {
     switch (type) {
       case 'header':
@@ -219,16 +205,14 @@ export const ResumeBuilder = () => {
       </header>
 
       <div className="flex flex-1">
-        {/* Sidebar */}
         <Sidebar onAddSection={addSectionByClick} />
-
-        {/* === CHANGE: DndContext for grid/absolute movement === */}
         <main className="flex-1 overflow-auto">
           <DndContext
             sensors={sensors}
             onDragStart={handleDragStart}
             onDragEnd={handleDragEnd}
-            modifiers={[restrictToParentElement]} // Optional: keep in parent
+            // restrict sections to canvas parent; snap center to pointer
+            modifiers={[restrictToParentElement, snapCenterToCursor]}
           >
             <Canvas
               sections={sections}
@@ -238,10 +222,9 @@ export const ResumeBuilder = () => {
               updateSection={updateSection}
               updateSectionStyle={updateSectionStyle}
               updateSectionSize={updateSectionSize}
-              updateSectionPosition={updateSectionPosition} // CHANGE: pass position updater
+              updateSectionPosition={updateSectionPosition}
               deleteSection={deleteSection}
             />
-            {/* Drag overlay for visual feedback */}
             <DragOverlay>
               {activeDragItem ? (
                 <div className="bg-card p-4 rounded-lg shadow-lg border-2 border-primary opacity-90">
