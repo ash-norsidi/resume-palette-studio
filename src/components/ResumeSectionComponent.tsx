@@ -29,7 +29,7 @@ export const ResumeSectionComponent = ({
   sectionId,
   onDelete
 }: ResumeSectionComponentProps) => {
-  // Use useSortable for the container - but only apply listeners to the drag handle
+  // DnD-Kit sortable hook, mainly for drag handle logic
   const {
     attributes,
     listeners,
@@ -44,6 +44,8 @@ export const ResumeSectionComponent = ({
       section
     }
   });
+
+  // === Section content handlers (no change needed) ===
   const handleInputChange = (field: string, value: any) => {
     onUpdate({ [field]: value });
   };
@@ -96,6 +98,7 @@ export const ResumeSectionComponent = ({
     }
   };
 
+  // === Main content rendering (no change needed) ===
   const renderSectionContent = () => {
     switch (section.type) {
       case 'header':
@@ -335,22 +338,34 @@ export const ResumeSectionComponent = ({
     }
   };
 
+  // === CHANGE: Use absolute positioning for grid/flexible layout ===
+  // The style below ensures this component is positioned according to its
+  // section.position (x/y) and section.size (width/height).
+  // This is the main change for grid/flexible placement.
   const style = {
+    // DnD-Kit transform still applies during drag
     transform: CSS.Transform.toString(transform),
     transition,
     opacity: isDragging ? 0.5 : 1,
+    // Absolute positioning for grid/flexible placement:
+    position: 'absolute',
+    left: section.position.x,
+    top: section.position.y,
+    width: section.size.width,
+    height: section.size.height,
+    pointerEvents: 'auto',
+    minWidth: 200,
+    minHeight: 100
   };
 
-  const currentWidth = typeof section.size.width === 'number' ? section.size.width : 400;
-  const currentHeight = typeof section.size.height === 'number' ? section.size.height : 200;
-
   return (
+    // === CHANGE: root div is now absolutely positioned ===
     <div 
       ref={setNodeRef}
       style={style}
-      className={`relative ${isDragging ? 'z-10' : ''}`}
+      className={`resume-section ${isDragging ? 'z-10' : ''}`}
     >
-      {/* Delete (x) button */}
+      {/* Delete (x) button remains unchanged */}
       {isSelected && (
         <Button
           size="icon"
@@ -371,9 +386,10 @@ export const ResumeSectionComponent = ({
         </Button>
       )}
       
+      {/* Resizable logic is unchanged, but now the Card is inside an absolutely positioned container */}
       <Resizable
-        width={currentWidth}
-        height={currentHeight}
+        width={section.size.width}
+        height={section.size.height}
         onResize={(e, { size }) => {
           onResize({ width: size.width, height: size.height });
         }}
@@ -383,8 +399,8 @@ export const ResumeSectionComponent = ({
       >
         <Card
           style={{
-            width: currentWidth,
-            height: currentHeight,
+            width: section.size.width,
+            height: section.size.height,
           }}
           className={`
             relative p-6 cursor-pointer transition-all duration-normal hover:shadow-md
@@ -395,11 +411,10 @@ export const ResumeSectionComponent = ({
           `}
           onClick={onSelect}
         >     
-          {/* Drag handle is now inside the Card, so it moves with the section */}
+          {/* Drag handle is inside the Card, so it moves with the section */}
           <div className="absolute top-2 right-2 z-20">
             <DragHandle attributes={attributes} listeners={listeners} isDragging={isDragging} />
           </div>
-          
           <div className="h-full overflow-auto">
             {renderSectionContent()}
           </div>
