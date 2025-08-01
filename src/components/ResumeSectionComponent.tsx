@@ -350,9 +350,6 @@ export const ResumeSectionComponent = ({
       style={style}
       className={`relative ${isDragging ? 'z-10' : ''}`}
     >
-      {/* Isolated Drag Handle - Only this handle triggers drag */}
-      <DragHandle attributes={attributes} listeners={listeners} isDragging={isDragging} />
-
       {/* Delete (x) button */}
       {isSelected && (
         <Button
@@ -397,7 +394,12 @@ export const ResumeSectionComponent = ({
             }
           `}
           onClick={onSelect}
-        >          
+        >     
+          {/* Drag handle is now inside the Card, so it moves with the section */}
+          <div className="absolute top-2 right-2 z-20">
+            <DragHandle attributes={attributes} listeners={listeners} isDragging={isDragging} />
+          </div>
+          
           <div className="h-full overflow-auto">
             {renderSectionContent()}
           </div>
