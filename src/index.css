@@ -245,11 +245,9 @@
   .canvas-grid {
     background-color: var(--background);
     background-image:
-      repeating-linear-gradient(
-        to right, #e5e7eb 0px, #e5e7eb 1px, transparent 1px, transparent 30px
-      ),
-      repeating-linear-gradient(
-        to bottom, #e5e7eb 0px, #e5e7eb 1px, transparent 1px, transparent 30px
-      );
+      radial-gradient(#e5e7eb 2px, transparent 1px),
+      radial-gradient(#e5e7eb 2px, transparent 1px);
+    background-size: 30px 30px;
+    background-position: 0 0, 15px 15px;
   }
 }
