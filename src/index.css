@@ -241,4 +241,15 @@
   .react-resizable-handle:hover::after {
     background: hsl(var(--primary-foreground));
   }
+
+  .canvas-grid {
+    background-color: var(--background);
+    background-image:
+      repeating-linear-gradient(
+        to right, #e5e7eb 0px, #e5e7eb 1px, transparent 1px, transparent 30px
+      ),
+      repeating-linear-gradient(
+        to bottom, #e5e7eb 0px, #e5e7eb 1px, transparent 1px, transparent 30px
+      );
+  }
 }
