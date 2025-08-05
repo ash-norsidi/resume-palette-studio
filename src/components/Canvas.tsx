@@ -32,7 +32,7 @@ export const Canvas = ({
     <div className="relative min-h-[800px] bg-background rounded-lg shadow-lg border-2 border-dashed transition-all duration-normal">
       {/* === CHANGE: If no sections, show the empty state centered === */}
       {sections.length === 0 ? (
-        <div className="absolute inset-0 flex items-center justify-center">
+        <div className="absolute inset-0 flex items-center justify-center canvas-grid">
           <div className="text-center text-muted-foreground">
             <div className="text-6xl mb-4">📄</div>
             <h3 className="text-lg font-medium mb-2">Start Building Your Resume</h3>
